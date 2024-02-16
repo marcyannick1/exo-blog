@@ -31,6 +31,9 @@ class ArticlesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $article->setDateDeCreation(new \DateTime());
+            if ($article->getEtat() == "publié") {
+                $article->setDateDeParution(new \DateTime());
+            }
             $entityManager->persist($article);
             $entityManager->flush();
 
