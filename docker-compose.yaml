@@ -1,0 +1,24 @@
+version: '2'
+services:
+  db:
+    image: mariadb
+    command: --max_allowed_packet=1024M --sql_mode='NO_ENGINE_SUBSTITUTION'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=exo-blog
+      - MYSQL_USER=root
+    volumes:
+      - ./docker/db/data:/var/lib/mysql:rw
+      - "./tmp:/home/tmp"
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    links:
+      - db
+    environment:
+      - PMA_HOST=db
+      - UPLOAD_LIMIT=3000000000
