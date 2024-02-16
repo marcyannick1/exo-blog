@@ -5,5 +5,10 @@
 {% block body %}
 <div>
     <h1>Accueil</h1>
+    {% for categorie in categories %}
+        <a href={{path("app_categories_show", {id : categorie.id})}}>{{categorie.titre}}<a/>
+    {% endfor %}
+    <br>
+    <a href={{path("app_categories_new")}}>Créer une nouvelle catégorie</a>
 </div>
 {% endblock %}

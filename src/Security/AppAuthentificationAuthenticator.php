@@ -49,7 +49,7 @@ class AppAuthentificationAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate(''));
+        return new RedirectResponse($this->urlGenerator->generate('app_accueil'));
     }
 
     protected function getLoginUrl(Request $request): string
