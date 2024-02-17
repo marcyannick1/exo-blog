@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Commentaire;
 use App\Form\ArticleType;
+use App\Form\CommentaireType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -72,6 +75,31 @@ class ArticlesController extends AbstractController
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/comment', name: 'app_articles_comment')]
+    public function comment(Request $request, Article $article, EntityManagerInterface $entityManager, Security $security): Response
+    {
+        $user = $security->getUser();
+        $comment = new Commentaire();
+        $form = $this->createForm(CommentaireType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $comment->setDateDePublication(new \DateTime());
+            $comment->setAuteur($user);
+            $comment->setArticle($article);
+            $comment->setEtat('activé');
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_articles_index');
+        }
+
+        return $this->render('articles/comment.html.twig', [
+            'form' => $form,
+            'article' => $article,
         ]);
     }
 

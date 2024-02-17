@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comment Article{% endblock %}
+
+{% block body %}
+    <h1>Commenter l'article {{article.titre}}</h1>
+    {{form(form)}}
+{% endblock %}
