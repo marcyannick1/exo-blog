@@ -14,6 +14,7 @@
                 <th>Date_de_creation</th>
                 <th>Etat</th>
                 <th>Date_de_parution</th>
+                <th>Categorie</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                 <td>{{ article.DateDeCreation ? article.DateDeCreation|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.Etat }}</td>
                 <td>{{ article.DateDeParution ? article.DateDeParution|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.Categorie.titre}}</td>
                 <td>
                     <a href="{{ path('app_articles_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('app_articles_edit', {'id': article.id}) }}">edit</a>

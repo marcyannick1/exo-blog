@@ -45,11 +45,13 @@ class CategoriesController extends AbstractController
     #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
     public function show(Categorie $categorie): Response
     {
+        $articles = $categorie->getArticles();
         if ($categorie == null) {
             return $this->redirectToRoute('app_accueil');
         }
         return $this->render('categories/show.html.twig', [
             'categorie' => $categorie,
+            'articles' => $articles->toArray(),
         ]);
     }
 
