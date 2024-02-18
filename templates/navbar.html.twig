@@ -1,0 +1,38 @@
+<style>
+	.navbar {
+		background-color: #f8f9fa;
+		overflow: hidden;
+		display: flex;
+	}
+	.navbar a {
+		float: left;
+		display: block;
+		color: #333;
+		text-align: center;
+		padding: 14px 16px;
+		text-decoration: none;
+		font-size: 17px;
+	}
+	.navbar a.logout {
+		margin-left: auto
+	}
+	.navbar a:hover {
+		background-color: #ddd;
+		color: black;
+	}
+	.navbar a.active {
+		background-color: #4CAF50;
+		color: white;
+	}
+</style>
+
+<div class="navbar">
+	<a {% if app.request.attributes.get('_route') == 'app_accueil' %} class="active" {% endif %} href="/">Accueil</a>
+	<a {% if app.request.attributes.get('_route') == 'app_categories_index' %} class="active" {% endif %} href="/categories">Catégories</a>
+	<a {% if app.request.attributes.get('_route') == 'app_articles_index' %} class="active" {% endif %} href="/articles">Articles</a>
+	{% if app.user %}
+		<a class="logout" href="/logout">Déconnexion</a>
+	{% else %}
+		<a class="logout" href="/login">Connexion</a>
+	{% endif %}
+</div>
