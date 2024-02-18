@@ -72,7 +72,7 @@ class CategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_categories_show', ["id" => $categorie->getId()]);
         }
 
         return $this->render('categories/edit.html.twig', [

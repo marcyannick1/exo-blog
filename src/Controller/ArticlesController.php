@@ -19,15 +19,26 @@ class ArticlesController extends AbstractController
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository): Response
     {
+        $user = $this->getUser();
+        $articles = $articleRepository->findBy(['Etat' => 'publié']);
+
+        if($user){
+            $userRole = $user->getRoles();
+            if (in_array('ROLE_ADMIN', $userRole)) {
+                $articles = $articleRepository->findAll();
+            }
+        }
+
+
         return $this->render('articles/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articles,
         ]);
     }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if(!$this->isGranted('ROLE_ADMIN')){
+        if (!$this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_accueil');
         }
 
@@ -36,6 +47,7 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setAuteur($this->getUser());
             $article->setDateDeCreation(new \DateTime());
             if ($article->getEtat() == "publié") {
                 $article->setDateDeParution(new \DateTime());
@@ -65,10 +77,10 @@ class ArticlesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
-        if(!$this->isGranted('ROLE_ADMIN')){
+        if (!$this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_accueil');
         }
-        
+
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -78,7 +90,7 @@ class ArticlesController extends AbstractController
             }
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_articles_show', ["id" => $article->getId()]);
         }
 
         return $this->render('articles/edit.html.twig', [
@@ -92,15 +104,15 @@ class ArticlesController extends AbstractController
     {
         $user = $this->getUser();
 
-        if(!$user){
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        
+
         $comment = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $comment);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $comment->setDateDePublication(new \DateTime());
             $comment->setAuteur($user);
             $comment->setArticle($article);
@@ -108,7 +120,7 @@ class ArticlesController extends AbstractController
 
             $entityManager->persist($comment);
             $entityManager->flush();
-            return $this->redirectToRoute('app_articles_index');
+            return $this->redirectToRoute('app_articles_show', ["id" => $article->getId()]);
         }
 
         return $this->render('articles/comment.html.twig', [
@@ -120,7 +132,7 @@ class ArticlesController extends AbstractController
     #[Route('/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $entityManager->remove($article);
             $entityManager->flush();
         }

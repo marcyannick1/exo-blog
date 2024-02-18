@@ -24,10 +24,6 @@ class ArticleType extends AbstractType
                     'Publié' => Article::ETAT_PUBLIE
                 ]
             ])
-            ->add('Auteur', EntityType::class, [
-                'class' => Utilisateur::class,
-'choice_label' => 'nom',
-            ])
             ->add('Categorie', EntityType::class, [
                 'class' => Categorie::class,
 'choice_label' => 'titre',

@@ -1,49 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article index
+{% block title %}Articles
 {% endblock %}
 
 {% block body %}
+	<style>
+		.articles {
+			display: flex;
+			flex-direction: column;
+			gap: 1em
+		}
+		.article {
+			display: flex;
+			flex-direction: column;
+		}
+		.article .categorie {
+			color: gray;
+			font-size: 0.8em
+		}
+		.article .titre {
+			margin: 0;
+		}
+		.article .auteur {
+			font-size: 0.7em;
+			color: gray
+		}
+		.article .date {
+			font-size: 0.7em;
+			color: gainsboro
+		}
+		.article .brouillon {
+			font-size: 0.8em;
+			color: crimson
+		}
+		.article .publié {
+			font-size: 0.8em;
+			color: teal
+		}
+	</style>
 	<h1>Articles</h1>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Titre</th>
-				<th>Contenu</th>
-				<th>Date_de_creation</th>
-				<th>Etat</th>
-				<th>Date_de_parution</th>
-				<th>Categorie</th>
-				<th>actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for article in articles %}
-				<tr>
-					<td>{{ article.id }}</td>
-					<td>{{ article.Titre }}</td>
-					<td>{{ article.Contenu }}</td>
-					<td>{{ article.DateDeCreation ? article.DateDeCreation|date('Y-m-d H:i:s') : '' }}</td>
-					<td>{{ article.Etat }}</td>
-					<td>{{ article.DateDeParution ? article.DateDeParution|date('Y-m-d H:i:s') : '' }}</td>
-					<td>{{ article.Categorie.titre}}</td>
-					<td>
-						<a href="{{ path('app_articles_show', {'id': article.id}) }}">show</a>
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="{{ path('app_articles_edit', {'id': article.id}) }}">edit</a>
-						{% endif %}
-					</td>
-				</tr>
+	<div class="articles">
+		{% for article in articles %}
+			<div class="article">
+				<span class="categorie">{{article.categorie.titre}}</span>
+				<h3 class="titre">
+					<a class="titre" href={{path("app_articles_show", {id : article.id} )}}>
+						{{article.titre}}
+						<a/>
+					</h3>
+					<span class="auteur">{{article.auteur.nom}}
+						{{article.auteur.prenom}}</span>
+					<br>
+					<span class="date">{{ article.dateDeParution ? article.dateDeParution|date('Y-m-d H:i:s') : '' }}</span>
+					{% if is_granted('ROLE_ADMIN') %}
+						<span class={{article.etat == "publié" ? "publié" : "brouillon"}}>{{article.etat}}</span>
+					{% endif %}
+				</div>
 			{% else %}
-				<tr>
-					<td colspan="7">no records found</td>
-				</tr>
+				<span>Aucun article existant😕</span>
+				<br>
 			{% endfor %}
-		</tbody>
-	</table>
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_articles_new') }}">Create new</a>
-	{% endif %}
-{% endblock %}
+		</div>
+		{% if is_granted('ROLE_ADMIN') %}
+			<a href={{path("app_articles_new")}}>Créer un nouveau article➕</a>
+		{% endif %}
+	{% endblock %}

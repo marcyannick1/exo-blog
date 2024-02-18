@@ -1,4 +1,32 @@
+<style>
+	.form-row div {
+		max-width: 500px;
+		display: flex;
+		flex-direction: column;
+	}
+    .content textarea{
+        resize: none;
+        height: 200px
+    }
+	input, textarea, select {
+		font-size: 0.8em;
+		padding: 5px;
+		border-radius: 4px;
+		border: 1px solid gray
+	}
+</style>
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="form-row">
+	{{ form_row(form.Titre) }}
+</div>
+<div class="form-row content">
+	{{ form_row(form.Contenu) }}
+</div>
+<div class="form-row">
+	{{ form_row(form.Etat) }}
+</div>
+<div class="form-row">
+	{{ form_row(form.Categorie) }}
+</div>
+<button class="btn">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

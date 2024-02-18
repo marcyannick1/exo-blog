@@ -1,55 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article
+{% block title %}
+	{{article.titre}}
 {% endblock %}
 
 {% block body %}
-	<h1>Article</h1>
-
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ article.id }}</td>
-			</tr>
-			<tr>
-				<th>Titre</th>
-				<td>{{ article.Titre }}</td>
-			</tr>
-			<tr>
-				<th>Contenu</th>
-				<td>{{ article.Contenu }}</td>
-			</tr>
-			<tr>
-				<th>Date_de_creation</th>
-				<td>{{ article.DateDeCreation ? article.DateDeCreation|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-			<tr>
-				<th>Etat</th>
-				<td>{{ article.Etat }}</td>
-			</tr>
-			<tr>
-				<th>Date_de_parution</th>
-				<td>{{ article.DateDeParution ? article.DateDeParution|date('Y-m-d H:i:s') : '' }}</td>
-			</tr>
-		</tbody>
-	</table>
-
+	<style>
+		.actions {
+			display: flex;
+			gap: 5px;
+		}
+		.date {
+			font-size: 0.8em;
+			color: gainsboro;
+		}
+		.auteur {
+			font-size: 0.8em;
+			color: gray;
+		}
+		h2 {
+			margin-bottom: 0
+		}
+		.comment{
+			margin-bottom: 0
+		}
+	</style>
+	<h2>{{article.titre}}</h2>
+	<span class="auteur">{{ article.auteur.nom ~ " " ~ article.auteur.prenom}}</span>
+	<br>
+	<span class="date">{{ article.DateDeParution ? "Publié le " ~ article.DateDeParution|date('Y-m-d H:i:s') : "Créer le " ~ article.DateDeCreation|date('Y-m-d H:i:s') }}</span>
 	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_articles_edit', {'id': article.id}) }}">edit</a>
+		<div class="actions">
+			<a href="{{ path('app_articles_edit', {'id': article.id}) }}">Modifier l'article🖋️</a>
+			{{ include('articles/_delete_form.html.twig') }}
+		</div>
 	{% endif %}
+	<p>{{article.contenu}}</p>
 
 	{% if app.user %}
-		<a href="{{ path('app_articles_comment', {'id': article.id}) }}">comment</a>
-	{% endif %}
-
-
-	{% if is_granted('ROLE_ADMIN') %}
-		{{ include('articles/_delete_form.html.twig') }}
+		<a href="{{ path('app_articles_comment', {'id': article.id}) }}">Commenter l'article💬</a>
 	{% endif %}
 
 	<h2>Commentaires:</h2>
 	{% for commentaire in commentaires %}
-		<p>{{commentaire.commentaire}}</p>
+		<div>
+			<p class="comment">{{commentaire.commentaire}}</p>
+			<span class="auteur">{{ commentaire.auteur.nom ~ " " ~ commentaire.auteur.prenom}}</span>
+			<br>
+			<span class="date">{{ commentaire.DateDePublication|date('Y-m-d H:i:s') }}</span>
+		</div>
 	{% endfor %}
 {% endblock %}

@@ -62,12 +62,12 @@
 								{{article.auteur.prenom}}</span>
 							<br>
 							<span class="date">{{article.dateDeParution|date("m/d/Y H:i:s")}}</span>
-						</div>
-					{% else %}
+					</div>
+				{% else %}
 						<span>Aucun article existant😕</span>
 						<br>
-					{% endfor %}
-				</div>
+				{% endfor %}
+			</div>
 			</div>
 
 		{% endblock %}

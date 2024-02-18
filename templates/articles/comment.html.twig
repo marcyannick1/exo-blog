@@ -1,8 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment Article{% endblock %}
+{% block title %}Commenter l'article
+{% endblock %}
 
 {% block body %}
-    <h1>Commenter l'article {{article.titre}}</h1>
-    {{form(form)}}
+	<style>
+		.form-row div {
+			max-width: 500px;
+			display: flex;
+			flex-direction: column;
+		}
+		textarea {
+			resize: none;
+		}
+		input,
+		textarea,
+		select {
+			font-size: 0.8em;
+			padding: 5px;
+			border-radius: 4px;
+			border: 1px solid gray
+		}
+	</style>
+	<h2>Commenter l'article "{{article.titre}}"</h2>
+	{{ form_start(form) }}
+	<div class="form-row">
+		{{ form_row(form.Commentaire) }}
+	</div>
+	<button class="btn">Commenter</button>
+	{{ form_end(form) }}
 {% endblock %}
