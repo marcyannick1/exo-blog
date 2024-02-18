@@ -25,6 +25,10 @@ class CategoriesController extends AbstractController
     #[Route('/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if(!$this->isGranted('ROLE_ADMIN')){
+            return $this->redirectToRoute('app_accueil');
+        }
+
         $categorie = new Categorie();
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
@@ -58,6 +62,10 @@ class CategoriesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Categorie $categorie, EntityManagerInterface $entityManager): Response
     {
+        if(!$this->isGranted('ROLE_ADMIN')){
+            return $this->redirectToRoute('app_accueil');
+        }
+        
         $form = $this->createForm(CategorieType::class, $categorie);
         $form->handleRequest($request);
 

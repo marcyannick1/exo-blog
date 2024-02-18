@@ -9,7 +9,6 @@ use App\Form\CommentaireType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -28,6 +27,10 @@ class ArticlesController extends AbstractController
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if(!$this->isGranted('ROLE_ADMIN')){
+            return $this->redirectToRoute('app_accueil');
+        }
+
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
@@ -62,6 +65,10 @@ class ArticlesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
+        if(!$this->isGranted('ROLE_ADMIN')){
+            return $this->redirectToRoute('app_accueil');
+        }
+        
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -81,9 +88,14 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{id}/comment', name: 'app_articles_comment')]
-    public function comment(Request $request, Article $article, EntityManagerInterface $entityManager, Security $security): Response
+    public function comment(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
-        $user = $security->getUser();
+        $user = $this->getUser();
+
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+        
         $comment = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $comment);
         $form->handleRequest($request);
