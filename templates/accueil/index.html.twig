@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AccueilController!
+{% block title %}Accueil
 {% endblock %}
 
 {% block body %}
@@ -9,7 +9,7 @@
 			display: flex;
 			flex-direction: column;
 		}
-		.articles{
+		.articles {
 			display: flex;
 			flex-direction: column;
 			gap: 1em
@@ -36,32 +36,38 @@
 	</style>
 	<div>
 		{% if is_granted('ROLE_ADMIN') %}
-			<a href={{path("app_categories_new")}}>Créer une nouvelle catégorie</a>
-			<a href={{path("app_articles_new")}}>Créer un nouveau article</a>
+			<a href={{path("app_categories_new")}}>Créer une nouvelle catégorie➕</a>
+			<a href={{path("app_articles_new")}}>Créer un nouveau article➕</a>
 		{% endif %}
 		<h2>Les 3 dernières catégories ajoutées</h2>
 		<div class="categories">
 			{% for categorie in categories %}
 				<a href={{path("app_categories_show", {id : categorie.id} )}}>{{categorie.titre}}<a/>
-			{% endfor %}
-		</div>
-		<h2>Les 3 derniers articles ajoutés</h2>
-		<div class="articles">
-			{% for article in articles %}
-				<div class="article">
-					<span class="categorie">{{article.categorie.titre}}</span>
-					<h3 class="titre">
-						<a class="titre" href={{path("app_articles_show", {id : article.id} )}}>
-							{{article.titre}}
-							<a/>
-						</h3>
-						<span class="auteur">{{article.auteur.nom}}
-							{{article.auteur.prenom}}</span>
+				{% else %}
+					<span>Aucune catégorie existante😕</span>
+					<br>
+				{% endfor %}
+			</div>
+			<h2>Les 3 derniers articles publiés</h2>
+			<div class="articles">
+				{% for article in articles %}
+					<div class="article">
+						<span class="categorie">{{article.categorie.titre}}</span>
+						<h3 class="titre">
+							<a class="titre" href={{path("app_articles_show", {id : article.id} )}}>
+								{{article.titre}}
+								<a/>
+							</h3>
+							<span class="auteur">{{article.auteur.nom}}
+								{{article.auteur.prenom}}</span>
+							<br>
+							<span class="date">{{article.dateDeParution|date("m/d/Y H:i:s")}}</span>
+						</div>
+					{% else %}
+						<span>Aucun article existant😕</span>
 						<br>
-						<span class="date">{{article.dateDeParution|date("m/d/Y H:i:s")}}</span>
+					{% endfor %}
 				</div>
-			{% endfor %}
-		</div>
-	</div>
-	
-{% endblock %}
+			</div>
+
+		{% endblock %}

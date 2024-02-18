@@ -1,62 +1,65 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categorie
+{% block title %}{{categorie.titre}}
 {% endblock %}
 
 {% block body %}
-	<h1>Categorie</h1>
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ categorie.id }}</td>
-			</tr>
-			<tr>
-				<th>Titre</th>
-				<td>{{ categorie.Titre }}</td>
-			</tr>
-		</tbody>
-	</table>
-
-	{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('app_categories_edit', {'id': categorie.id}) }}">edit</a>
-		{{ include('categories/_delete_form.html.twig') }}
-	{% endif %}
-
-
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Titre</th>
-				<th>Contenu</th>
-				<th>Date_de_creation</th>
-				<th>Etat</th>
-				<th>Date_de_parution</th>
-				<th>actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for article in articles %}
-				<tr>
-					<td>{{ article.id }}</td>
-					<td>{{ article.Titre }}</td>
-					<td>{{ article.Contenu }}</td>
-					<td>{{ article.DateDeCreation ? article.DateDeCreation|date('Y-m-d H:i:s') : '' }}</td>
-					<td>{{ article.Etat }}</td>
-					<td>{{ article.DateDeParution ? article.DateDeParution|date('Y-m-d H:i:s') : '' }}</td>
-					<td>
-						<a href="{{ path('app_articles_show', {'id': article.id}) }}">show</a>
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="{{ path('app_articles_edit', {'id': article.id}) }}">edit</a>
-						{% endif %}
-					</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="7">no records found</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+	<style>
+		.actions{
+			display: flex;
+			gap: 5px;
+		}
+		.articles {
+			margin-top: 1.5em;
+			display: flex;
+			flex-direction: column;
+			gap: 1em
+		}
+		.article {
+			display: flex;
+			flex-direction: column;
+		}
+		.article .categorie {
+			color: gray;
+			font-size: 0.8em
+		}
+		.article .titre {
+			margin: 0;
+		}
+		.article .auteur {
+			font-size: 0.7em;
+			color: gray
+		}
+		.article .date {
+			font-size: 0.7em;
+			color: gainsboro
+		}
+	</style>
+	<h2>Catégorie
+		{{ categorie.titre }}</h2>
+	<div class="actions">
+		{% if is_granted('ROLE_ADMIN') %}
+			<a href={{path("app_categories_edit", {id: categorie.id} )}}>Modifier la catégorie🖋️</a>
+			{{ include('categories/_delete_form.html.twig') }}
+		{% endif %}
+	</div>
+	<div class="articles">
+	{% for article in articles %}
+		<div class="article">
+			<span class="categorie">{{article.categorie.titre}}</span>
+			<h3 class="titre">
+				<a class="titre" href={{path("app_articles_show", {id : article.id} )}}>
+					{{article.titre}}
+					<a/>
+				</h3>
+				<span class="auteur">{{article.auteur.nom}}
+					{{article.auteur.prenom}}</span>
+				<br>
+				<span class="date">{{article.dateDeParution|date("m/d/Y H:i:s")}}</span>
+			</div>
+		{% else %}
+			<span>Aucun article existant dans cette catégorie😕</span>
+			<br>
+		{% endfor %}
+	</div>
 {% endblock %}
