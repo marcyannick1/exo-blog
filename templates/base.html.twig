@@ -15,13 +15,15 @@
 		{% endblock %}
 	</head>
 	<body>
-		{% include "navbar.html.twig" %}
 		<style>
-			body {
-				margin: 0;
+			body{
+				margin: 0 4em;
 				font: 18px / 1.5 poppins;
 			}
 		</style>
+		<header>
+			{% include "navbar.html.twig" %}
+		</header>
 		{% block body %}{% endblock %}
 	</body>
 </html>
